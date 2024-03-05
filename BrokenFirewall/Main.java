@@ -1,4 +1,4 @@
-package PurchaseTickets;
+package BrokenFirewall;
 import java.io.*;
 import java.util.*;
 
@@ -17,7 +17,7 @@ public class Main
 
         //Try and read in the numbers from input.txt
         try {
-            Scanner input = new Scanner(new File("PurchaseTickets/puzzledata.txt"));
+            Scanner input = new Scanner(new File("BrokenFirewall/testInput.txt"));
             while(input.hasNextLine()){
                 in.add(input.nextLine());
             }
