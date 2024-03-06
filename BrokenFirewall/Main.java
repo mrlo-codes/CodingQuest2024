@@ -17,7 +17,7 @@ public class Main
 
         //Try and read in the numbers from input.txt
         try {
-            Scanner input = new Scanner(new File("BrokenFirewall/testInput.txt"));
+            Scanner input = new Scanner(new File("BrokenFirewall/puzzledata.txt"));
             while(input.hasNextLine()){
                 in.add(input.nextLine());
             }
@@ -33,84 +33,42 @@ public class Main
     }
 
     public static String test(){
-        String currName, currCommand;
-        int currVal, indexColon, indexFirstSpace, indexSecondSpace;
-
-        ArrayList<Object[]> totals = new ArrayList<Object[]>();
-
-
+        int currLength, currSource1, currSource2, currDestination1, currDestination2, totalInternal = 0, totalPassenger = 0; 
+        String lengthStr, sourceHeader1, sourceHeader2, destinationHeader1, destinationHeader2;
 
         for(String line : in){
-            indexColon = line.indexOf(":");
-            indexFirstSpace = line.indexOf(" ", indexColon);
-            indexSecondSpace = line.indexOf(" ", indexFirstSpace + 1);
+            lengthStr = line.substring(4, 8);
+            sourceHeader1  = line.substring(24, 26);
+            sourceHeader2 = line.substring(26, 28);
+            destinationHeader1 = line.substring(32, 34);
+            destinationHeader2 = line.substring(34, 36);
 
-            currName = line.substring(0, indexColon);
-            currCommand = line.substring(indexFirstSpace + 1, indexSecondSpace);
-            currVal = Integer.parseInt(line.substring(indexSecondSpace + 1));
+            currLength = Integer.valueOf(lengthStr, 16);
+            currSource1= Integer.valueOf(sourceHeader1, 16);
+            currSource2= Integer.valueOf(sourceHeader2, 16);
+            currDestination1 = Integer.valueOf(destinationHeader1, 16);
+            currDestination2 = Integer.valueOf(destinationHeader2, 16);
 
-            //System.out.println("Current name: " + currName + " Current Command: " + currCommand + " Current value: " + currVal);
+            //debugging
+            System.out.println("Length " + currLength + ", source IP header " + currSource1 + "." + currSource2 + ", destination IP header " + currDestination1 + "." + currDestination2);
 
-            if(find(totals, currName) == -1){
-                Object[] temp = {(String)currName, (Integer)0};
-                totals.add(temp);
-                //System.out.println("Added " + currName);
+            if(currSource1 == 10 && currSource2 == 0){
+                totalPassenger+= currLength;
+            } else if (currSource1 == 192 && currSource2 == 168){
+                totalInternal+= currLength;
             }
 
-
-            if(currCommand.equals("Discount") || currCommand.equals("Rebate")){
-                Object[] currItem = totals.get(find(totals, currName));
-
-                currItem[1] = (Integer)currItem[1] - currVal;
-
-                totals.set(find(totals, currName), currItem);
-
-            } else {
-                Object[] currItem = totals.get(find(totals, currName));
-
-                currItem[1] = (Integer)currItem[1] + currVal;
-
-                totals.set(find(totals, currName), currItem);
+            if(currDestination1 == 10 && currDestination2 == 0){
+                totalPassenger+= currLength;
+            } else if (currDestination1 == 192 && currDestination2 == 168){
+                totalInternal+= currLength;
             }
-
 
 
         }
 
-        /*
-
-        //Output current values of each company [TESTING PURPOSES ONLY]
-        for(Object[] o: totals){
-            System.out.println(o[0] + " " + o[1]);
-        }
-        */
-
-        //Find smallest
-        String company = "";
-        int lowestCost = (Integer)totals.get(0)[1];
-
-        for(Object[] o: totals){
-            if((Integer)o[1] < lowestCost){
-                lowestCost = (Integer)o[1];
-                company = (String)o[0];
-            }
-        }
-
-        return "Lowest company: " + company + " with cost of $" + lowestCost;
-    }
-
-    public static int find(ArrayList<Object[]> a, String name){
-        int found = -1;
-        int pos = 0;
-
-        for(Object[] o : a){
-            if(o[0].equals(name)){
-                found = pos;
-            }
-            pos++;
-        }
-
-        return found;
+       
+        return "Ratio: " + totalInternal + "/" + totalPassenger;
     }
 
     
