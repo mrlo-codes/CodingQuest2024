@@ -5,3 +5,4 @@ cx22   63529  111890       0   98977
 xj84   61302   35768   98977       0
 
 Rover 1 route: base -> cx22 -> ta00 -> base -> xj84 -> base
+Rover 1 route: base -> cx22 -> ta00 -> base -> xj84 -> base
