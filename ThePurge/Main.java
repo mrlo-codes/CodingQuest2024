@@ -21,7 +21,7 @@ public class Main
 
         //Try and read in the numbers from input.txt
         try {
-            Scanner input = new Scanner(new File("ThePurge/testInput.txt"));
+            Scanner input = new Scanner(new File("ThePurge/puzzledata.txt"));
             while(input.hasNextLine()){
                 in.add(input.nextLine());
             }
@@ -65,9 +65,11 @@ public class Main
                         //check if it is a file or a folder
                         System.out.println("Processing..." + currFile[0] + " with file info " + currFile[1]);
                         if(currFile[1].indexOf("FOLDER") != -1){
-                            int folderNum = Integer.parseInt(currFile[1].substring(8, 9));
+                            int folderNum = Integer.parseInt(currFile[1].substring(8, currFile[1].indexOf("]")));
                             System.out.println("Getting ready to delete Folder " + folderNum);
                             sumOfBytesDeleted+= removeDirectory(folderNum);
+                            currFolder.remove(j);
+                            j--;
                         } else {
                             sumOfBytesDeleted+= Integer.parseInt(currFile[1]);
                             currFolder.remove(j);
@@ -80,7 +82,7 @@ public class Main
 
         }
 
-        //printDirectory();
+        printDirectory();
 
         System.out.println("Number of bytes deleted: " + sumOfBytesDeleted);
 
@@ -114,15 +116,19 @@ public class Main
 
     public static void printDirectory(){
         int folderCount = 0;
+    
         for(ArrayList<String[]> f : folders){
             System.out.println("Folder: " + folderCount);
-
-            for(String[] fi : f){
-                System.out.print("\t-");
-                for(String c : fi){
-                    System.out.print(c + " ");
+            if(f != null){
+                for(String[] fi : f){
+                    System.out.print("\t-");
+                    for(String c : fi){
+                        System.out.print(c + " ");
+                    }
+                    System.out.println();
                 }
-                System.out.println();
+            } else {
+                System.out.println("[EMPTY]");
             }
 
             folderCount++;
@@ -144,9 +150,13 @@ public class Main
                 //check if it is a file or a folder
                 if(currFile != null){
                     if (currFile[1].contains("FOLDER")){
-                        int folderNum = Integer.parseInt(currFile[1].substring(8, 9));
+                        
+                        int folderNum = Integer.parseInt(currFile[1].substring(8, currFile[1].indexOf("]")));
                         System.out.println("\tGetting ready to delete Folder " + folderNum);
                         sumOfBytesDeleted+= removeDirectory(folderNum);
+                        currFolder.remove(j);
+                        j--;
+                    
                     } else {
                         sumOfBytesDeleted+= Integer.parseInt(currFile[1]);
                         currFolder.remove(j);
